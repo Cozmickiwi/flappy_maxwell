@@ -1,0 +1,5 @@
+(
+  title: "Flappy Maxwell",
+  dimensions: Some((450, 600)),
+  resizable: false,
+)
