@@ -14,8 +14,11 @@ impl SimpleState for FlappyMaxwell {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
         let sprite_sheet_handle = load_maxwell_sprite(world);
+        let sprite_sheet_handle_pipe = load_pipe_sprite(world);
         world.register::<Maxwell>();
         initialise_maxwell(world, sprite_sheet_handle);
+        world.register::<Pipe>();
+        initialise_pipe(world, sprite_sheet_handle_pipe);
         initialise_camera(world);
     }
 }
@@ -86,4 +89,45 @@ fn load_maxwell_sprite(world: &mut World) -> Handle<SpriteSheet> {
         (),
         &sprite_sheet_store,
     )
+}
+
+pub struct Pipe {
+    pub width: f32,
+    pub height: f32,
+}
+
+impl Pipe {
+    fn new() -> Pipe {
+        Pipe {
+            width: MAX_WIDTH,
+            height: MAX_HEIGHT,
+        }
+    }
+}
+
+impl Component for Pipe {
+    type Storage = DenseVecStorage<Self>;
+}
+
+fn initialise_pipe(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
+    let sprite_render = SpriteRender::new(sprite_sheet_handle, 0);
+    let mut pipe_transform = Transform::default();
+    pipe_transform.set_translation_xyz(AREA_WIDTH / 2.0, AREA_HEIGHT / 2.0, 0.0);
+    world
+        .create_entity()
+        .with(sprite_render)
+        .with(Pipe::new())
+        .with(pipe_transform)
+        .build();
+}
+
+fn load_pipe_sprite(world: &mut World) -> Handle<SpriteSheet> {
+    let texture_handle = {
+        let loader = world.read_resource::<Loader>();
+        let texture_storage = world.read_resource::<AssetStorage<Texture>>();
+        loader.load("pipe/pipe.png", ImageFormat::default(), (), &texture_storage)
+    };
+    let loader = world.read_resource::<Loader>();
+    let sprite_sheet_store = world.read_resource::<AssetStorage<SpriteSheet>>();
+    loader.load("pipe/pipe.ron", SpriteSheetFormat(texture_handle), (), &sprite_sheet_store)
 }
