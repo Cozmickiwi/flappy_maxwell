@@ -7,9 +7,11 @@ use amethyst::{
     },
     utils::application_root_dir,
     core::transform::TransformBundle,
+    input::{InputBundle, StringBindings},
 };
 
 mod fl_max;
+mod systems;
 
 use crate::fl_max::FlappyMaxwell;
 
@@ -17,8 +19,13 @@ fn main() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());
     let app_root = application_root_dir()?;
     let display_config_path = app_root.join("config").join("display.ron");
+    let binding_path = app_root.join("config").join("bindings.ron");
+    let input_bundle = InputBundle::<StringBindings>::new()
+        .with_bindings_from_file(binding_path)?;
     let game_data = GameDataBuilder::default()
         .with_bundle(TransformBundle::new())?
+        .with_bundle(input_bundle)?
+        .with(systems::BounceSystem { key_was_pressed: false, bounce_on: false, bounce_ticker: 0 }, "bounce_system", &["input_system"])
         .with_bundle(
             RenderingBundle::<DefaultBackend>::new().with_plugin(
                 RenderToWindow::from_config_path(display_config_path)?
