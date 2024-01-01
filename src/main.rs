@@ -34,6 +34,7 @@ fn main() -> amethyst::Result<()> {
             "bounce_system",
             &["input_system"],
         )
+        .with(systems::PipeSystem, "pipe_movement", &["input_system"])
         .with_bundle(
             RenderingBundle::<DefaultBackend>::new()
                 .with_plugin(

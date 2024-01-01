@@ -1205,6 +1205,7 @@ name = "flappy_maxwell"
 version = "0.1.0"
 dependencies = [
  "amethyst",
+ "rand 0.8.5",
 ]
 
 [[package]]

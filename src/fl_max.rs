@@ -109,6 +109,9 @@ impl Component for Pipe {
     type Storage = DenseVecStorage<Self>;
 }
 
+pub const PIPE_WIDTH: f32 = 15.0;
+pub const PIPE_HEIGHT: f32 = 110.0;
+
 fn initialise_pipe(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
     let sprite_render = SpriteRender::new(sprite_sheet_handle, 0);
     let mut pipe_transform = Transform::default();
