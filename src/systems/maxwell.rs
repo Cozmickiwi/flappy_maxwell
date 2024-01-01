@@ -1,7 +1,7 @@
 use amethyst::{
-    core::{Transform, SystemDesc},
+    core::Transform,
     derive::SystemDesc,
-    ecs::{Join, Read, ReadStorage, System, SystemData, World, WriteStorage},
+    ecs::{Join, Read, ReadStorage, System, SystemData, WriteStorage},
     input::{InputHandler, StringBindings},
     winit::VirtualKeyCode,
 };
@@ -30,9 +30,9 @@ impl BounceSystem {
 
 impl<'s> System<'s> for BounceSystem {
     type SystemData = (
-    WriteStorage<'s, Transform>,
-    ReadStorage<'s, Maxwell>,
-    Read<'s, InputHandler<StringBindings>>,
+        WriteStorage<'s, Transform>,
+        ReadStorage<'s, Maxwell>,
+        Read<'s, InputHandler<StringBindings>>,
     );
     fn run(&mut self, (mut transforms, max, input): Self::SystemData) {
         let key_down_now = input.key_is_down(VirtualKeyCode::Space);
@@ -55,17 +55,16 @@ impl<'s> System<'s> for BounceSystem {
                 self.bounce_on = false;
             }
         }
-        for (m, t) in (&max, &mut transforms).join() {
+        for (_m, t) in (&max, &mut transforms).join() {
             if self.bounce_on == false {
                 let max_y = t.translation().y;
                 t.set_translation_y(
-                    (max_y - 0.2)
-                        .max(MAX_HEIGHT * 0.2),  
-                        //.max(0.0),  
+                    (max_y - 0.25).max(MAX_HEIGHT * 0.2),
+                    //.max(0.0),
                 );
             } else {
                 if t.translation()[1] < AREA_HEIGHT - (MAX_HEIGHT * 0.4) {
-                t.prepend_translation_y(0.15 * (BOUNCE_DISTANCE / BOUNCE_TIME));
+                    t.prepend_translation_y(0.15 * (BOUNCE_DISTANCE / BOUNCE_TIME));
                 }
                 if self.bounce_ticker <= (BOUNCE_DISTANCE as u8) / 2 {
                     t.set_rotation_z_axis(self.bounce_ticker as f32 / 55.0);

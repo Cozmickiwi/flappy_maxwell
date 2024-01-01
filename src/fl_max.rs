@@ -1,7 +1,7 @@
 extern crate amethyst;
 
 use amethyst::{
-    assets::{AssetStorage, Loader, Handle},
+    assets::{AssetStorage, Handle, Loader},
     core::transform::Transform,
     ecs::{Component, DenseVecStorage},
     prelude::*,
@@ -55,10 +55,10 @@ impl Component for Maxwell {
     type Storage = DenseVecStorage<Self>;
 }
 
-fn initialise_maxwell (world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
+fn initialise_maxwell(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
     let sprite_render = SpriteRender::new(sprite_sheet_handle, 0);
     let mut max_transform = Transform::default();
-    max_transform.set_translation_xyz(AREA_WIDTH * 0.35, 50.0, 0.0);
+    max_transform.set_translation_xyz(AREA_WIDTH * 0.275, 50.0, 0.0);
     world
         .create_entity()
         .with(sprite_render)
@@ -71,9 +71,19 @@ fn load_maxwell_sprite(world: &mut World) -> Handle<SpriteSheet> {
     let texture_handle = {
         let loader = world.read_resource::<Loader>();
         let texture_storage = world.read_resource::<AssetStorage<Texture>>();
-        loader.load("texture/maxwell.png", ImageFormat::default(), (), &texture_storage)
+        loader.load(
+            "texture/maxwell.png",
+            ImageFormat::default(),
+            (),
+            &texture_storage,
+        )
     };
     let loader = world.read_resource::<Loader>();
     let sprite_sheet_store = world.read_resource::<AssetStorage<SpriteSheet>>();
-    loader.load("texture/maxwell.ron", SpriteSheetFormat(texture_handle), (), &sprite_sheet_store)
+    loader.load(
+        "texture/maxwell.ron",
+        SpriteSheetFormat(texture_handle),
+        (),
+        &sprite_sheet_store,
+    )
 }

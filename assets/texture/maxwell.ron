@@ -1,5 +1,5 @@
 List((
-  texture_width: 23,
-  texture_height: 12,
-  sprites: [(x: 0, y: 0, width: 23, height: 12)],
+  texture_width: 17,
+  texture_height: 9,
+  sprites: [(x: 0, y: 0, width: 17, height: 9)],
 ))
