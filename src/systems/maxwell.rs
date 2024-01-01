@@ -60,11 +60,16 @@ impl<'s> System<'s> for BounceSystem {
                 let max_y = t.translation().y;
                 t.set_translation_y(
                     (max_y - 0.2)
-                        .max(MAX_HEIGHT * 0.5),  
+                        .max(MAX_HEIGHT * 0.2),  
                         //.max(0.0),  
                 );
             } else {
                 t.prepend_translation_y(0.15 * (BOUNCE_DISTANCE / BOUNCE_TIME));
+                if self.bounce_ticker <= (BOUNCE_DISTANCE as u8) / 2 {
+                    t.set_rotation_z_axis(self.bounce_ticker as f32 / 55.0);
+                } else {
+                    t.set_rotation_z_axis((BOUNCE_DISTANCE - self.bounce_ticker as f32) / 55.0);
+                }
             }
         }
     }
