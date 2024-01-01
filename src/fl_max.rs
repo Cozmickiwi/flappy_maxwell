@@ -8,6 +8,8 @@ use amethyst::{
     renderer::{Camera, ImageFormat, SpriteRender, SpriteSheet, SpriteSheetFormat, Texture},
 };
 
+use rand::Rng;
+
 pub struct FlappyMaxwell;
 
 impl SimpleState for FlappyMaxwell {
@@ -109,13 +111,16 @@ impl Component for Pipe {
     type Storage = DenseVecStorage<Self>;
 }
 
-pub const PIPE_WIDTH: f32 = 15.0;
-pub const PIPE_HEIGHT: f32 = 110.0;
+pub const PIPE_WIDTH: f32 = 17.0;
+pub const PIPE_HEIGHT: f32 = 170.0;
 
 fn initialise_pipe(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
     let sprite_render = SpriteRender::new(sprite_sheet_handle, 0);
     let mut pipe_transform = Transform::default();
-    pipe_transform.set_translation_xyz(AREA_WIDTH / 2.0, AREA_HEIGHT / 2.0, 0.0);
+    let mut rng = rand::thread_rng();
+    let random_num: i32 = rng.gen_range(1..=44);
+    let ran_y = (random_num - 22) as f32 + 50.0;
+    pipe_transform.set_translation_xyz(AREA_WIDTH + PIPE_WIDTH, ran_y, 0.0);
     world
         .create_entity()
         .with(sprite_render)
@@ -128,7 +133,7 @@ fn load_pipe_sprite(world: &mut World) -> Handle<SpriteSheet> {
     let texture_handle = {
         let loader = world.read_resource::<Loader>();
         let texture_storage = world.read_resource::<AssetStorage<Texture>>();
-        loader.load("pipe/pipe.png", ImageFormat::default(), (), &texture_storage)
+        loader.load("pipe/pipe2.png", ImageFormat::default(), (), &texture_storage)
     };
     let loader = world.read_resource::<Loader>();
     let sprite_sheet_store = world.read_resource::<AssetStorage<SpriteSheet>>();

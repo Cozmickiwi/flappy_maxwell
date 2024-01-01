@@ -24,6 +24,9 @@ impl<'s> System<'s> for PipeSystem {
             t.prepend_translation_x(-0.1);
             if t.translation()[0] <= -PIPE_WIDTH {
                 t.set_translation_x(AREA_WIDTH + PIPE_WIDTH);
+                let mut rng = rand::thread_rng();
+                let random_num: i32 = rng.gen_range(1..=44);
+                t.set_translation_y((random_num - 22) as f32 + 50.0);
             }
         } 
     }
