@@ -93,14 +93,22 @@ fn load_maxwell_sprite(world: &mut World) -> Handle<SpriteSheet> {
     )
 }
 
+#[derive(PartialEq, Eq)]
+pub enum Order {
+    First,
+    Second,
+}
+
 pub struct Pipe {
+    pub order: Order,
     pub width: f32,
     pub height: f32,
 }
 
 impl Pipe {
-    fn new() -> Pipe {
+    fn new(order: Order) -> Pipe {
         Pipe {
+            order,
             width: MAX_WIDTH,
             height: MAX_HEIGHT,
         }
@@ -117,15 +125,25 @@ pub const PIPE_HEIGHT: f32 = 170.0;
 fn initialise_pipe(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
     let sprite_render = SpriteRender::new(sprite_sheet_handle, 0);
     let mut pipe_transform = Transform::default();
+    let mut pipe_transform2 = Transform::default();
     let mut rng = rand::thread_rng();
     let random_num: i32 = rng.gen_range(1..=44);
     let ran_y = (random_num - 22) as f32 + 50.0;
+    let random_num2: i32 = rng.gen_range(1..=44);
+    let ran_y2 = (random_num2 - 22) as f32 + 50.0;
     pipe_transform.set_translation_xyz(AREA_WIDTH + PIPE_WIDTH, ran_y, 0.0);
+    pipe_transform2.set_translation_xyz(AREA_WIDTH + PIPE_WIDTH * 2.0 + (AREA_WIDTH / 2.0), ran_y2, 0.0);
+    world
+        .create_entity()
+        .with(sprite_render.clone())
+        .with(Pipe::new(Order::First))
+        .with(pipe_transform)
+        .build();
     world
         .create_entity()
         .with(sprite_render)
-        .with(Pipe::new())
-        .with(pipe_transform)
+        .with(Pipe::new(Order::Second))
+        .with(pipe_transform2)
         .build();
 }
 

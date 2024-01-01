@@ -21,7 +21,7 @@ impl<'s> System<'s> for PipeSystem {
 
     fn run(&mut self, (mut transforms, pipe): Self::SystemData) {
        for (p, t) in (&pipe, &mut transforms).join() {
-            t.prepend_translation_x(-0.1);
+            t.prepend_translation_x(-0.3);
             if t.translation()[0] <= -PIPE_WIDTH {
                 t.set_translation_x(AREA_WIDTH + PIPE_WIDTH);
                 let mut rng = rand::thread_rng();
