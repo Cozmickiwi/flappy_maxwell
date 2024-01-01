@@ -64,7 +64,9 @@ impl<'s> System<'s> for BounceSystem {
                         //.max(0.0),  
                 );
             } else {
+                if t.translation()[1] < AREA_HEIGHT - (MAX_HEIGHT * 0.4) {
                 t.prepend_translation_y(0.15 * (BOUNCE_DISTANCE / BOUNCE_TIME));
+                }
                 if self.bounce_ticker <= (BOUNCE_DISTANCE as u8) / 2 {
                     t.set_rotation_z_axis(self.bounce_ticker as f32 / 55.0);
                 } else {
