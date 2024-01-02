@@ -132,7 +132,11 @@ fn initialise_pipe(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) 
     let random_num2: i32 = rng.gen_range(1..=44);
     let ran_y2 = (random_num2 - 22) as f32 + 50.0;
     pipe_transform.set_translation_xyz(AREA_WIDTH + PIPE_WIDTH, ran_y, 0.0);
-    pipe_transform2.set_translation_xyz(AREA_WIDTH + PIPE_WIDTH * 2.0 + (AREA_WIDTH / 2.0), ran_y2, 0.0);
+    pipe_transform2.set_translation_xyz(
+        AREA_WIDTH + PIPE_WIDTH * 2.0 + (AREA_WIDTH / 2.0),
+        ran_y2,
+        0.0,
+    );
     world
         .create_entity()
         .with(sprite_render.clone())
@@ -151,9 +155,19 @@ fn load_pipe_sprite(world: &mut World) -> Handle<SpriteSheet> {
     let texture_handle = {
         let loader = world.read_resource::<Loader>();
         let texture_storage = world.read_resource::<AssetStorage<Texture>>();
-        loader.load("pipe/pipe2.png", ImageFormat::default(), (), &texture_storage)
+        loader.load(
+            "pipe/pipe2.png",
+            ImageFormat::default(),
+            (),
+            &texture_storage,
+        )
     };
     let loader = world.read_resource::<Loader>();
     let sprite_sheet_store = world.read_resource::<AssetStorage<SpriteSheet>>();
-    loader.load("pipe/pipe.ron", SpriteSheetFormat(texture_handle), (), &sprite_sheet_store)
+    loader.load(
+        "pipe/pipe.ron",
+        SpriteSheetFormat(texture_handle),
+        (),
+        &sprite_sheet_store,
+    )
 }

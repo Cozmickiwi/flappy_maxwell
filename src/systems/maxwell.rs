@@ -6,7 +6,7 @@ use amethyst::{
     winit::VirtualKeyCode,
 };
 
-use crate::fl_max::{Maxwell, AREA_HEIGHT, MAX_HEIGHT, Pipe, MAX_WIDTH, AREA_WIDTH, PIPE_WIDTH};
+use crate::fl_max::{Maxwell, Pipe, AREA_HEIGHT, AREA_WIDTH, MAX_HEIGHT, MAX_WIDTH, PIPE_WIDTH};
 
 const BOUNCE_TIME: f32 = 30.0;
 const BOUNCE_DISTANCE: f32 = 37.5;
@@ -73,15 +73,19 @@ impl<'s> System<'s> for BounceSystem {
                 } else {
                     t.set_rotation_z_axis((BOUNCE_DISTANCE - self.bounce_ticker as f32) / 95.0);
                 }
-            } 
+            }
             //if (t.translation().y + MAX_WIDTH / 2)
             max_y_pos = t.translation().y;
-        }  
+        }
         for (_p, t) in (&pipe, &transforms).join() {
-            if (AREA_WIDTH * 0.275) + (MAX_WIDTH / 2.0) - 2.0 >= t.translation().x - (PIPE_WIDTH / 2.0) 
-                && ((AREA_WIDTH * 0.275) - (MAX_WIDTH / 2.0)) + 2.0 <= t.translation().x + (PIPE_WIDTH / 2.0) {
-                if(max_y_pos - (MAX_HEIGHT / 2.0)) <= t.translation().y - (AREA_HEIGHT / 7.0)
-                    ||(max_y_pos + (MAX_HEIGHT / 2.0)) >= t.translation().y + (AREA_HEIGHT / 7.0){
+            if (AREA_WIDTH * 0.275) + (MAX_WIDTH / 2.0) - 2.0
+                >= t.translation().x - (PIPE_WIDTH / 2.0)
+                && ((AREA_WIDTH * 0.275) - (MAX_WIDTH / 2.0)) + 2.0
+                    <= t.translation().x + (PIPE_WIDTH / 2.0)
+            {
+                if (max_y_pos - (MAX_HEIGHT / 2.0)) <= t.translation().y - (AREA_HEIGHT / 7.0)
+                    || (max_y_pos + (MAX_HEIGHT / 2.0)) >= t.translation().y + (AREA_HEIGHT / 7.0)
+                {
                     println!("Collision!!");
                 }
             }
