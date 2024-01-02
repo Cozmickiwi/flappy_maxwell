@@ -7,8 +7,8 @@ use amethyst::{
         types::DefaultBackend,
         RenderingBundle,
     },
-    utils::application_root_dir,
     ui::{RenderUi, UiBundle},
+    utils::application_root_dir,
 };
 
 mod fl_max;

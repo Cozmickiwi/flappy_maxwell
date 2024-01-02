@@ -1,13 +1,15 @@
 use amethyst::{
     core::Transform,
     derive::SystemDesc,
-    ecs::{Join, Read, ReadStorage, ReadExpect, System, SystemData, Write, WriteStorage},
+    ecs::{Join, Read, ReadExpect, ReadStorage, System, SystemData, Write, WriteStorage},
     input::{InputHandler, StringBindings},
-    winit::VirtualKeyCode,
     ui::UiText,
+    winit::VirtualKeyCode,
 };
 
-use crate::fl_max::{Maxwell, Pipe, Score, ScoreText, AREA_HEIGHT, AREA_WIDTH, MAX_HEIGHT, MAX_WIDTH, PIPE_WIDTH};
+use crate::fl_max::{
+    Maxwell, Pipe, Score, ScoreText, AREA_HEIGHT, AREA_WIDTH, MAX_HEIGHT, MAX_WIDTH, PIPE_WIDTH,
+};
 
 const BOUNCE_TIME: f32 = 30.0;
 const BOUNCE_DISTANCE: f32 = 37.5;
@@ -41,7 +43,10 @@ impl<'s> System<'s> for BounceSystem {
         Write<'s, Score>,
         ReadExpect<'s, ScoreText>,
     );
-    fn run(&mut self, (mut transforms, max, pipe, input, mut ui_text, mut score, score_text): Self::SystemData) {
+    fn run(
+        &mut self,
+        (mut transforms, max, pipe, input, mut ui_text, mut score, score_text): Self::SystemData,
+    ) {
         let key_down_now = input.key_is_down(VirtualKeyCode::Space);
         if key_down_now && !self.key_was_pressed {
             //println!("Space!!!!!!!!!!!!!!!!!!!!!");

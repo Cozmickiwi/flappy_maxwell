@@ -6,7 +6,7 @@ use amethyst::{
     ecs::{Component, DenseVecStorage, Entity},
     prelude::*,
     renderer::{Camera, ImageFormat, SpriteRender, SpriteSheet, SpriteSheetFormat, Texture},
-    ui::{UiBundle, UiText, UiTransform, TtfFormat, Anchor},
+    ui::{Anchor, TtfFormat, UiBundle, UiText, UiTransform},
 };
 
 use rand::Rng;
@@ -189,15 +189,20 @@ pub struct ScoreText {
 
 fn initialise_score(world: &mut World) {
     let font = world.read_resource::<Loader>().load(
-        "fonts/flappy-font.ttf", 
-        TtfFormat, (), &world.read_resource(),
+        "fonts/flappy-font.ttf",
+        TtfFormat,
+        (),
+        &world.read_resource(),
     );
     let ui_transform = UiTransform::new(
         "ui_text".to_string(),
         Anchor::TopMiddle,
         Anchor::TopMiddle,
-        0.0, -50.0, 0.0,
-        200.0, 200.0,
+        0.0,
+        -50.0,
+        0.0,
+        200.0,
+        200.0,
     );
     let score_text = world
         .create_entity()
