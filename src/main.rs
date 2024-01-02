@@ -8,6 +8,7 @@ use amethyst::{
         RenderingBundle,
     },
     utils::application_root_dir,
+    ui::{RenderUi, UiBundle},
 };
 
 mod fl_max;
@@ -26,11 +27,12 @@ fn main() -> amethyst::Result<()> {
         .with_bundle(TransformBundle::new())?
         .with_bundle(input_bundle)?
         .with(
-            systems::BounceSystem {
+            /*systems::BounceSystem {
                 key_was_pressed: false,
                 bounce_on: false,
                 bounce_ticker: 0,
-            },
+            },*/
+            systems::BounceSystem::new(),
             "bounce_system",
             &["input_system"],
         )
@@ -41,8 +43,10 @@ fn main() -> amethyst::Result<()> {
                     RenderToWindow::from_config_path(display_config_path)?
                         .with_clear([0.16471, 0.32157, 0.74510, 1.0]),
                 )
-                .with_plugin(RenderFlat2D::default()),
-        )?;
+                .with_plugin(RenderFlat2D::default())
+                .with_plugin(RenderUi::default()),
+        )?
+        .with_bundle(UiBundle::<StringBindings>::new())?;
     let assets_dir = app_root.join("assets");
     let mut game = Application::new(assets_dir, FlappyMaxwell, game_data)?;
     game.run();

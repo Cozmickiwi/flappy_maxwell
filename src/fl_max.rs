@@ -3,9 +3,10 @@ extern crate amethyst;
 use amethyst::{
     assets::{AssetStorage, Handle, Loader},
     core::transform::Transform,
-    ecs::{Component, DenseVecStorage},
+    ecs::{Component, DenseVecStorage, Entity},
     prelude::*,
     renderer::{Camera, ImageFormat, SpriteRender, SpriteSheet, SpriteSheetFormat, Texture},
+    ui::{UiBundle, UiText, UiTransform, TtfFormat, Anchor},
 };
 
 use rand::Rng;
@@ -21,6 +22,7 @@ impl SimpleState for FlappyMaxwell {
         initialise_maxwell(world, sprite_sheet_handle);
         world.register::<Pipe>();
         initialise_pipe(world, sprite_sheet_handle_pipe);
+        initialise_score(world);
         initialise_camera(world);
     }
 }
@@ -131,7 +133,7 @@ fn initialise_pipe(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) 
     let ran_y = (random_num - 22) as f32 + 50.0;
     let random_num2: i32 = rng.gen_range(1..=44);
     let ran_y2 = (random_num2 - 22) as f32 + 50.0;
-    pipe_transform.set_translation_xyz(AREA_WIDTH + PIPE_WIDTH, ran_y, 0.0);
+    pipe_transform.set_translation_xyz(AREA_WIDTH + PIPE_WIDTH, ran_y, -0.01);
     pipe_transform2.set_translation_xyz(
         AREA_WIDTH + PIPE_WIDTH * 2.0 + (AREA_WIDTH / 2.0),
         ran_y2,
@@ -170,4 +172,44 @@ fn load_pipe_sprite(world: &mut World) -> Handle<SpriteSheet> {
         (),
         &sprite_sheet_store,
     )
+}
+
+#[derive(Default, Debug)]
+pub struct Score {
+    pub score: i32,
+}
+
+impl Component for Score {
+    type Storage = DenseVecStorage<Self>;
+}
+
+pub struct ScoreText {
+    pub score_text: Entity,
+}
+
+fn initialise_score(world: &mut World) {
+    let font = world.read_resource::<Loader>().load(
+        "fonts/flappy-font.ttf", 
+        TtfFormat, (), &world.read_resource(),
+    );
+    let ui_transform = UiTransform::new(
+        "ui_text".to_string(),
+        Anchor::TopMiddle,
+        Anchor::TopMiddle,
+        0.0, -50.0, 0.0,
+        200.0, 200.0,
+    );
+    let score_text = world
+        .create_entity()
+        .with(ui_transform)
+        .with(UiText::new(
+            font,
+            "0".to_string(),
+            [1.0, 1.0, 1.0, 1.0],
+            90.0,
+            amethyst::ui::LineMode::Wrap,
+            Anchor::TopMiddle,
+        ))
+        .build();
+    world.insert(ScoreText { score_text });
 }
