@@ -13,6 +13,8 @@ use rand::Rng;
 
 pub struct FlappyMaxwell;
 
+pub struct GameOver;
+
 impl SimpleState for FlappyMaxwell {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
@@ -26,7 +28,13 @@ impl SimpleState for FlappyMaxwell {
         initialise_camera(world);
     }
 }
-
+/*
+impl SimpleState for GameOver {
+    fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
+        
+    }
+}
+*/
 pub const AREA_HEIGHT: f32 = 100.0;
 pub const AREA_WIDTH: f32 = 100.0;
 

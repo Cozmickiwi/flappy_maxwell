@@ -12,7 +12,7 @@ use crate::fl_max::{
 };
 
 const BOUNCE_TIME: f32 = 30.0;
-const BOUNCE_DISTANCE: f32 = 37.5;
+const BOUNCE_DISTANCE: f32 = 38.0;
 
 #[derive(SystemDesc)]
 pub struct BounceSystem {
@@ -63,21 +63,31 @@ impl<'s> System<'s> for BounceSystem {
         if self.bounce_on == true {
             self.bounce_ticker += 1;
             if self.bounce_ticker >= BOUNCE_DISTANCE as u8 {
-                self.bounce_ticker = 0;
+                //self.bounce_ticker = 0;
                 self.bounce_on = false;
+                self.bounce_ticker -= 16;
             }
         }
         let mut max_y_pos: f32 = AREA_HEIGHT / 2.0;
         for (_m, t) in (&max, &mut transforms).join() {
             if self.bounce_on == false {
                 let max_y = t.translation().y;
-                t.set_translation_y(
-                    (max_y - 0.3).max(MAX_HEIGHT * 0.2),
-                    //.max(0.0),
-                );
+                if self.bounce_ticker > 0 {
+                    t.set_translation_y(
+                        (max_y - (0.45 * (1.0 / self.bounce_ticker as f32))).max(MAX_HEIGHT * 0.2),
+                        //.max(0.0),
+                    );
+                    self.bounce_ticker -= 2;
+                } else {
+                    t.set_translation_y(
+                        (max_y - 0.45).max(MAX_HEIGHT * 0.2),
+                        //.max(0.0),
+                    );
+                }
             } else {
                 if t.translation()[1] < AREA_HEIGHT - (MAX_HEIGHT * 0.3) {
-                    t.prepend_translation_y(0.25 * (BOUNCE_DISTANCE / BOUNCE_TIME));
+                    //t.prepend_translation_y((0.28 * (BOUNCE_DISTANCE / BOUNCE_TIME)) * (1.0 / self.bounce_ticker as f32));
+                    t.prepend_translation_y(0.4 - (0.25 / (BOUNCE_DISTANCE - self.bounce_ticker as f32)));
                 }
                 if self.bounce_ticker <= (BOUNCE_DISTANCE as u8) / 2 {
                     t.set_rotation_z_axis(self.bounce_ticker as f32 / 55.0);
@@ -95,7 +105,7 @@ impl<'s> System<'s> for BounceSystem {
                     <= t.translation().x + (PIPE_WIDTH / 2.0)
             {
                 if (max_y_pos - (MAX_HEIGHT / 2.0)) <= t.translation().y - (AREA_HEIGHT / 7.0)
-                    || (max_y_pos + (MAX_HEIGHT / 2.0)) >= t.translation().y + (AREA_HEIGHT / 7.0)
+                    || (max_y_pos + (MAX_HEIGHT / 2.0)) >= t.translation().y + (AREA_HEIGHT / 6.0)
                 {
                     //println!("Collision!! {:?}", max_y_pos);
                     score.score = 0;
