@@ -8,7 +8,7 @@ use amethyst::{
 };
 
 use crate::fl_max::{
-    Maxwell, Pipe, Score, ScoreText, AREA_HEIGHT, AREA_WIDTH, MAX_HEIGHT, MAX_WIDTH, PIPE_WIDTH,
+    Maxwell, Pipe, Score, ScoreText, AREA_HEIGHT, AREA_WIDTH, MAX_HEIGHT, MAX_WIDTH, PIPE_WIDTH, Background,
 };
 
 const BOUNCE_TIME: f32 = 30.0;
@@ -42,10 +42,11 @@ impl<'s> System<'s> for BounceSystem {
         WriteStorage<'s, UiText>,
         Write<'s, Score>,
         ReadExpect<'s, ScoreText>,
+        ReadStorage<'s, Background>,
     );
     fn run(
         &mut self,
-        (mut transforms, max, pipe, input, mut ui_text, mut score, score_text): Self::SystemData,
+        (mut transforms, max, pipe, input, mut ui_text, mut score, score_text, background): Self::SystemData,
     ) {
         let key_down_now = input.key_is_down(VirtualKeyCode::Space);
         if key_down_now && !self.key_was_pressed {
@@ -120,6 +121,13 @@ impl<'s> System<'s> for BounceSystem {
                         }
                     }
                 }
+            }
+        }
+        let bcg_scroll_speed: f32 = 0.2;
+        for (_b, t) in (&background, &mut transforms).join() {
+            t.prepend_translation_x(-bcg_scroll_speed);
+            if t.translation().x < - 100.0 {
+                t.prepend_translation_x(200.0);
             }
         }
     }

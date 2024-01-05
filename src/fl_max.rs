@@ -1,7 +1,7 @@
 extern crate amethyst;
 
 use amethyst::{
-    assets::{AssetStorage, Handle, Loader},
+    assets::{AssetStorage, Handle, Loader, Source},
     core::transform::Transform,
     ecs::{Component, DenseVecStorage, Entity},
     prelude::*,
@@ -20,11 +20,14 @@ impl SimpleState for FlappyMaxwell {
         let world = data.world;
         let sprite_sheet_handle = load_maxwell_sprite(world);
         let sprite_sheet_handle_pipe = load_pipe_sprite(world);
+        let sprite_sheet_handle_background = load_background_texture(world);
         world.register::<Maxwell>();
         initialise_maxwell(world, sprite_sheet_handle);
         world.register::<Pipe>();
         initialise_pipe(world, sprite_sheet_handle_pipe);
         initialise_score(world);
+        world.register::<Background>();
+        initialise_background(world, sprite_sheet_handle_background);
         initialise_camera(world);
     }
 }
@@ -225,4 +228,58 @@ fn initialise_score(world: &mut World) {
         ))
         .build();
     world.insert(ScoreText { score_text });
+}
+
+const BCG_WIDTH: f32 = 1300.0;
+const BGC_HEIGHT: f32 = 600.0;
+
+pub struct Background {
+    pub width: f32,
+    pub height: f32,
+}
+
+impl Background {
+    fn new() -> Background {
+        Background {
+            width: BCG_WIDTH,
+            height: BGC_HEIGHT,
+        }
+    }
+}
+
+impl Component for Background {
+    type Storage = DenseVecStorage<Self>;
+}
+fn initialise_background(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
+    let sprite_render = SpriteRender::new(sprite_sheet_handle, 0);
+    let mut background_transform = Transform::default();
+    background_transform.set_translation_xyz(AREA_WIDTH / 2.0, AREA_HEIGHT / 2.0, -0.11);
+    world
+        .create_entity()
+        .with(sprite_render)
+        .with(background_transform)
+        .with(Background::new())
+        .build();
+
+}
+
+fn load_background_texture(world: &mut World) -> Handle<SpriteSheet> {
+    let texture_handle = {
+        let loader = world.read_resource::<Loader>();
+        let texture_storage = world.read_resource::<AssetStorage<Texture>>();
+        loader.load(
+            "background/8bitsky.jpg",
+            ImageFormat::default(),
+            (),
+            &texture_storage,
+        )
+    };
+    let loader = world.read_resource::<Loader>();
+    let sprite_sheet_store = world.read_resource::<AssetStorage<SpriteSheet>>();
+    loader.load(
+        "background/8bitsky.ron",
+        SpriteSheetFormat(texture_handle),
+        (),
+        &sprite_sheet_store,
+    )
 }
