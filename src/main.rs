@@ -5,7 +5,7 @@ use amethyst::{
     renderer::{
         plugins::{RenderFlat2D, RenderToWindow},
         types::DefaultBackend,
-        RenderingBundle,
+        RenderingBundle, pipeline,
     },
     ui::{RenderUi, UiBundle},
     utils::application_root_dir,

@@ -230,8 +230,8 @@ fn initialise_score(world: &mut World) {
     world.insert(ScoreText { score_text });
 }
 
-const BCG_WIDTH: f32 = 1300.0;
-const BGC_HEIGHT: f32 = 600.0;
+const BCG_WIDTH: f32 = 1721.0;
+const BGC_HEIGHT: f32 = 971.0;
 
 pub struct Background {
     pub width: f32,
@@ -253,11 +253,19 @@ impl Component for Background {
 fn initialise_background(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
     let sprite_render = SpriteRender::new(sprite_sheet_handle, 0);
     let mut background_transform = Transform::default();
-    background_transform.set_translation_xyz(AREA_WIDTH / 2.0, AREA_HEIGHT / 2.0, -0.11);
+    background_transform.set_translation_xyz(88.5, AREA_HEIGHT / 2.0, -0.11);
+    let mut background_transform2 = Transform::default();
+    background_transform2.set_translation_xyz(265.6, AREA_HEIGHT / 2.0, -0.11);
+    world
+        .create_entity()
+        .with(sprite_render.clone())
+        .with(background_transform)
+        .with(Background::new())
+        .build();
     world
         .create_entity()
         .with(sprite_render)
-        .with(background_transform)
+        .with(background_transform2)
         .with(Background::new())
         .build();
 
@@ -268,7 +276,7 @@ fn load_background_texture(world: &mut World) -> Handle<SpriteSheet> {
         let loader = world.read_resource::<Loader>();
         let texture_storage = world.read_resource::<AssetStorage<Texture>>();
         loader.load(
-            "background/8bitsky.jpg",
+            "background/8bitsky3.jpg",
             ImageFormat::default(),
             (),
             &texture_storage,

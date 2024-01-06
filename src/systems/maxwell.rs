@@ -123,11 +123,11 @@ impl<'s> System<'s> for BounceSystem {
                 }
             }
         }
-        let bcg_scroll_speed: f32 = 0.2;
+        let bcg_scroll_speed: f32 = 0.15;
         for (_b, t) in (&background, &mut transforms).join() {
             t.prepend_translation_x(-bcg_scroll_speed);
-            if t.translation().x < - 100.0 {
-                t.prepend_translation_x(200.0);
+            if t.translation().x <= -88.5 {
+                t.set_translation_x(265.5);
             }
         }
     }
